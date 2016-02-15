@@ -14,7 +14,7 @@ public class DataManager : MonoBehaviour {
         int inBounds = 0;
 
         //foreach (var dataItem in dataSet)
-        for (int i = 0; i < dataSet.Count; i++)
+        for (int i = 119100; i < 120100; i++)
         {
             Dictionary<string, object> dataItem = dataSet[i];
             float lat = (float)dataItem["Latitude"];
@@ -22,7 +22,9 @@ public class DataManager : MonoBehaviour {
 
             if (geoInfo.IsCoordinateInRange(lat, lon))
             {
+                print(lat + ", " + lon);
                 Vector3 position = geoInfo.GetPositionForCoordinate(lat, lon);
+                print(position);
                 GameObject newDataPoint = Instantiate(dataPointPrefab, position, Quaternion.identity) as GameObject;
                 newDataPoint.transform.parent = transform;
                 newDataPoint.name = "Data Point (" + lat + ", " + lon + ")";

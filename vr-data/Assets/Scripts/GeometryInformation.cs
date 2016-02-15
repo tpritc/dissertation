@@ -12,56 +12,43 @@ public class GeometryInformation : MonoBehaviour {
     private float deltaLatitude;
     private float deltaLongitude;
 
-    public float mapHeight;
-    public float mapWidth;
+    public float mapEdgeLength;
 
-    void Start()
+    void Awake()
     {
         deltaLatitude = topLeftLatitude - bottomRightLatitude;
         deltaLongitude = topLeftLongitude - bottomRightLongitude;
+
+        deltaLatitude *= deltaLatitude < 0.0f ? -1.0f : 1.0f;
+        deltaLongitude *= deltaLongitude < 0.0f ? -1.0f : 1.0f;
+
+        print("deltaLat is " + deltaLatitude.ToString());
+        print("deltaLon is " + deltaLongitude.ToString());
+
+        //print(GetPositionForCoordinate(50.3688f, -4.1478f));  // Ocean Crescent
     }
 
     public Vector3 GetPositionForCoordinate(float latitude, float longitude)
     {
         Vector3 position = new Vector3();
-        position.x = GetXZPositionForCoordinate(latitude, longitude).x;
-        position.z = GetXZPositionForCoordinate(latitude, longitude).y;
-        position.y = GetAltitudeInMetresForPosition(GetXZPositionForCoordinate(latitude, longitude));
-        return position;
-    }
+        
+        print("((" + latitude + " - " + bottomRightLatitude + ") / " + deltaLatitude + ") * " + mapEdgeLength);
+        // Latitude
+        position.z = (((latitude - bottomRightLatitude) / deltaLatitude) * mapEdgeLength);
+        position.z += (position.z < 0.0f ? 1.0f : -1.0f) * (mapEdgeLength / 2);
 
-    private Vector2 GetXZPositionForCoordinate(float latitude, float longitude)
-    {
-        Vector2 returnPosition = new Vector2(0.0f, 0.0f);
+        // Longitude
+        position.x = (((longitude - bottomRightLongitude) / deltaLongitude) * mapEdgeLength);
+        position.x += (position.x < 0.0f ? 1.0f : -1.0f) * (mapEdgeLength / 2);
 
-        returnPosition.x = (((longitude - bottomRightLongitude) / deltaLongitude) * mapWidth) - (mapWidth / 2);
-        returnPosition.y = (((latitude - bottomRightLatitude) / deltaLatitude) * mapHeight) - (mapHeight / 2);
-
-        print(returnPosition.x + ", " + returnPosition.y);
-
-        // (((50.3763 - 50.3482) / (50.4043 - 50.3482)) * 6240) - (6240 / 2)
-        // ((      0.0281        /        0.0561      ) * 6240) - 3210
-        // (                  0.50089                   * 6240) - 3210
-        //                                 3125.5615            - 3210
-        //                                              -84.4385
-
-        return returnPosition;
-    }
-
-    private float GetAltitudeInMetresForPosition(Vector2 position)
-    {
-        Ray raycast = new Ray(new Vector3(position.x, 10000.0f, position.y), Vector3.down);
+        // Altitude
+        Ray raycast = new Ray(new Vector3(position.x, 10000.0f, position.z), Vector3.down);
         RaycastHit hitInfo;
         bool hasTarget = Physics.Raycast(raycast, out hitInfo);
+        position.y = hitInfo.distance == 0 ? 0.0f : hitInfo.point.y;
 
-        if (hitInfo.distance == 0)
-        {
-            return 0.0f;
-        }
-        else
-        {
-            return hitInfo.point.y;
-        }
+        print(position);
+        return position;
     }
 
     public bool IsCoordinateInRange(float latitude, float longitude)
