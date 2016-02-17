@@ -14,7 +14,7 @@ public class DataManager : MonoBehaviour {
         int inBounds = 0;
 
         //foreach (var dataItem in dataSet)
-        for (int i = 119100; i < 120100; i++)
+        for (int i = 0; i < dataSet.Count; i++)
         {
             Dictionary<string, object> dataItem = dataSet[i];
             float lat = (float)dataItem["Latitude"];
