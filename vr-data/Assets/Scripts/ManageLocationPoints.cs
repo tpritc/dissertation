@@ -35,7 +35,7 @@ public class ManageLocationPoints : MonoBehaviour {
             SetAllPointsToColor(green);
             Ray raycast = new Ray(vrController.transform.position, vrController.transform.forward);
             RaycastHit hitInfo;
-            bool hasTarget = Physics.Raycast(raycast, out hitInfo);
+            Physics.Raycast(raycast, out hitInfo);
 
             if (hitInfo.distance == 0)
             {
