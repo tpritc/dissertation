@@ -8,6 +8,11 @@ public class DataManager : MonoBehaviour {
     public GeometryInformation geoInfo;
     public GameObject dataPointPrefab;
 
+    public DisplayData screenDisplayData;
+
+    public Material red;
+    public Material green;
+
 	void Start () {
         List<Dictionary<string, object>> dataSet = CSVReader.Read(dataFile);
         int completed = 0;
@@ -32,13 +37,12 @@ public class DataManager : MonoBehaviour {
                 newDataPoint.GetComponent<DataPoint>().longitude = lon;
                 newDataPoint.GetComponent<DataPoint>().data = dataItem;
 
-                GameObject.Find("Screen").GetComponent<DisplayData>().SetDataPoint(newDataPoint.GetComponent<DataPoint>());
+                screenDisplayData.SetDataPoint(newDataPoint.GetComponent<DataPoint>());
             }
             completed++;
         }
         print("Data Processed: " + completed.ToString());
         print("Data Shown:     " + inBounds.ToString());
 	}
-	
-
+    
 }

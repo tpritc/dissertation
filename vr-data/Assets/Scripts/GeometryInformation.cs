@@ -9,6 +9,8 @@ public class GeometryInformation : MonoBehaviour {
     public float bottomRightLatitude;
     public float bottomRightLongitude;
 
+    public float estimatedMaximumHeight = 2.0f;
+
     private float deltaLatitude;
     private float deltaLongitude;
 
@@ -36,7 +38,7 @@ public class GeometryInformation : MonoBehaviour {
         position.x += (position.x < 0.0f ? 1.0f : -1.0f) * (mapEdgeLength / 2);
 
         // Altitude
-        Ray raycast = new Ray(new Vector3(position.x, 10000.0f, position.z), Vector3.down);
+        Ray raycast = new Ray(new Vector3(position.x, estimatedMaximumHeight, position.z), Vector3.down);
         RaycastHit hitInfo;
         Physics.Raycast(raycast, out hitInfo);
         position.y = hitInfo.distance == 0 ? 0.0f : hitInfo.point.y;
