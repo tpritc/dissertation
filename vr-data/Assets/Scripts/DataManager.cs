@@ -22,18 +22,22 @@ public class DataManager : MonoBehaviour {
 
             if (geoInfo.IsCoordinateInRange(lat, lon))
             {
-                print(lat + ", " + lon);
                 Vector3 position = geoInfo.GetPositionForCoordinate(lat, lon);
-                print(position);
                 GameObject newDataPoint = Instantiate(dataPointPrefab, position, Quaternion.identity) as GameObject;
                 newDataPoint.transform.parent = transform;
                 newDataPoint.name = "Data Point (" + lat + ", " + lon + ")";
                 inBounds++;
+
+                newDataPoint.GetComponent<DataPoint>().latitude = lat;
+                newDataPoint.GetComponent<DataPoint>().longitude = lon;
+                newDataPoint.GetComponent<DataPoint>().data = dataItem;
+
+                GameObject.Find("Screen").GetComponent<DisplayData>().SetDataPoint(newDataPoint.GetComponent<DataPoint>());
             }
             completed++;
         }
-        print("Processed: " + completed.ToString());
-        print("Shown:     " + inBounds.ToString());
+        print("Data Processed: " + completed.ToString());
+        print("Data Shown:     " + inBounds.ToString());
 	}
 	
 

@@ -21,18 +21,12 @@ public class GeometryInformation : MonoBehaviour {
 
         deltaLatitude *= deltaLatitude < 0.0f ? -1.0f : 1.0f;
         deltaLongitude *= deltaLongitude < 0.0f ? -1.0f : 1.0f;
-
-        print("deltaLat is " + deltaLatitude.ToString());
-        print("deltaLon is " + deltaLongitude.ToString());
-
-        //print(GetPositionForCoordinate(50.3688f, -4.1478f));  // Ocean Crescent
     }
 
     public Vector3 GetPositionForCoordinate(float latitude, float longitude)
     {
         Vector3 position = new Vector3();
         
-        print("((" + latitude + " - " + bottomRightLatitude + ") / " + deltaLatitude + ") * " + mapEdgeLength);
         // Latitude
         position.z = (((latitude - bottomRightLatitude) / deltaLatitude) * mapEdgeLength);
         position.z += (position.z < 0.0f ? 1.0f : -1.0f) * (mapEdgeLength / 2);
@@ -44,10 +38,9 @@ public class GeometryInformation : MonoBehaviour {
         // Altitude
         Ray raycast = new Ray(new Vector3(position.x, 10000.0f, position.z), Vector3.down);
         RaycastHit hitInfo;
-        bool hasTarget = Physics.Raycast(raycast, out hitInfo);
+        Physics.Raycast(raycast, out hitInfo);
         position.y = hitInfo.distance == 0 ? 0.0f : hitInfo.point.y;
 
-        print(position);
         return position;
     }
 
