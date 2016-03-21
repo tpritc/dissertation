@@ -11,6 +11,8 @@ public class ControllerNaturalManipulation : MonoBehaviour {
 
     private float lastDistanceBetweenControllers;
     private Vector3 lastAveragePositionOfControllers;
+    private float lastRotationOfControllers;
+
 
     void Start () {
         controllerLeft = steamVRControllerManager.left;
@@ -24,6 +26,7 @@ public class ControllerNaturalManipulation : MonoBehaviour {
 
         lastAveragePositionOfControllers = AverageControllerPosition();
         lastDistanceBetweenControllers = DistanceBetweenControllers();
+        lastRotationOfControllers = RotationInDegreesOfControllers();
 	}
 
     void UpdateObjectPosition()
@@ -33,13 +36,17 @@ public class ControllerNaturalManipulation : MonoBehaviour {
             Vector3 translationVector = AverageControllerPosition() - lastAveragePositionOfControllers;
             translationVector.y = 0.0f;
 
-            objectToManipulate.transform.Translate(translationVector);
+            objectToManipulate.transform.position += translationVector;
         }
     }
 
     void UpdateObjectRotation()
     {
-
+        if (BothTriggersPulled())
+        {
+            float amountToRotate = (RotationInDegreesOfControllers() - lastRotationOfControllers);
+            objectToManipulate.transform.RotateAround(AverageControllerPosition(), Vector3.up, amountToRotate);
+        }
     }
 
     void UpdateObjectScale()
@@ -47,10 +54,9 @@ public class ControllerNaturalManipulation : MonoBehaviour {
         if (BothTriggersPulled())
         {
             float scaleFactor = 1 + (DistanceBetweenControllers() - lastDistanceBetweenControllers);
-            Debug.Log(scaleFactor);
-
-            Vector3 newScale = objectToManipulate.transform.localScale *= scaleFactor;
-            objectToManipulate.transform.localScale.Set(newScale.x, newScale.y, newScale.z);
+            float objectScaleY = objectToManipulate.transform.localScale.y;
+            ScaleObjectAroundPoint(objectToManipulate, AverageControllerPosition(), scaleFactor);
+            objectToManipulate.transform.localScale.Set(objectToManipulate.transform.localScale.x, objectScaleY, objectToManipulate.transform.localScale.z);
         }
     }
 
@@ -68,6 +74,11 @@ public class ControllerNaturalManipulation : MonoBehaviour {
     {
         return (controllerLeft.transform.position + controllerRight.transform.position) / 2;
     }
+    
+    float RotationInDegreesOfControllers()
+    {
+        return Mathf.Atan2(controllerLeft.transform.position.z - controllerRight.transform.position.z, controllerLeft.transform.position.x - controllerRight.transform.position.x) * Mathf.Rad2Deg * -1.0f;
+    }
 
     bool BothTriggersPulled()
     {
@@ -76,6 +87,21 @@ public class ControllerNaturalManipulation : MonoBehaviour {
 
         return controllerLeftTriggerPulled && controllerRightTriggerPulled;
     }
+
+    void ScaleObjectAroundPoint(GameObject objectToScale, Vector3 pivotPoint, float amountToScaleBy)
+    {
+        Vector3 a = objectToScale.transform.position;
+        Vector3 startScale = objectToScale.transform.localScale;
+        Vector3 endScale = objectToScale.transform.localScale * amountToScaleBy;
+        Vector3 c = a - pivotPoint;
+        Vector3 finalPosition = (c * amountToScaleBy) + pivotPoint;
+
+        finalPosition.y = objectToScale.transform.position.y;
+
+        objectToScale.transform.localScale = endScale;
+        objectToScale.transform.position = finalPosition;
+    }
+
 
 
 }
