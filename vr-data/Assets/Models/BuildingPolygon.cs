@@ -12,6 +12,8 @@ namespace Assets
         public void Initialize(List<Vector3> verts)
         {
             GetComponent<MeshFilter>().mesh = CreateMesh(verts);
+            GetComponent<MeshRenderer>().material = Resources.Load("New Material") as Material;
+            GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
         private static Mesh CreateMesh(List<Vector3> verts)
@@ -53,9 +55,10 @@ namespace Assets
             mesh.vertices = vertices.ToArray();
             mesh.triangles = indices.ToArray();
 
+            mesh.Optimize();
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
-
+            
             return mesh;
         }
     }

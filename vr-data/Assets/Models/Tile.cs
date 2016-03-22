@@ -20,7 +20,7 @@ namespace Assets
             BuildingDictionary = new Dictionary<Vector3, BuildingHolder>();
         }
 
-        public IEnumerator CreateTile(World w, Vector2 realPos, Vector2 worldCenter, int zoom)
+        public IEnumerator CreateTile(World w, Vector2 realPos, Vector2 tileCenter, int zoom)
         {
             var tilename = realPos.x + "_" + realPos.y;
             var tileurl = realPos.x + "/" + realPos.y;
@@ -47,6 +47,8 @@ namespace Assets
 
             CreateBuildings(mapData["buildings"]);
             CreateRoads(mapData["roads"]);
+
+            transform.position -= Extensions.ToVector3xz(tileCenter);
         }
 
         private void CreateBuildings(JSONObject mapData)

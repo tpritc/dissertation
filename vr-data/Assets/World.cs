@@ -4,24 +4,14 @@ using System.Collections;
 
 public class World : MonoBehaviour 
 {
-    public Vector2 Center;
-    public int Zoom;
+    public Vector2 tileCoordinate;
+    public int zoomLevel = 14;
 
-	void Start () 
+	void Start ()
     {
-        var go = new GameObject("tile");
-        var tile = go.AddComponent<Tile>();
-        StartCoroutine(tile.CreateTile(this, new Vector2(Center.x, Center.y), new Vector2(0, 0), Zoom));
-    }
-	
-	void Update () 
-    {
-	
-	}
-
-    void OnGUI()
-    {
-        GUI.Label(new Rect(10, 10, 500, 30), Center.x.ToString());
-        GUI.Label(new Rect(10, 50, 500, 30), Center.y.ToString());
+        var tileObject = new GameObject("Tile (" + tileCoordinate.x.ToString() + ", " + tileCoordinate.y.ToString() + ", " + zoomLevel.ToString() + ")");
+        var tile = tileObject.AddComponent<Tile>();
+        tileObject.transform.parent = transform;
+        StartCoroutine(tile.CreateTile(this, new Vector2(tileCoordinate.x, tileCoordinate.y), new Vector2(), zoomLevel));
     }
 }

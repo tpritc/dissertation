@@ -91,7 +91,6 @@ public class ControllerNaturalManipulation : MonoBehaviour {
     void ScaleObjectAroundPoint(GameObject objectToScale, Vector3 pivotPoint, float amountToScaleBy)
     {
         Vector3 a = objectToScale.transform.position;
-        Vector3 startScale = objectToScale.transform.localScale;
         Vector3 endScale = objectToScale.transform.localScale * amountToScaleBy;
         Vector3 c = a - pivotPoint;
         Vector3 finalPosition = (c * amountToScaleBy) + pivotPoint;
