@@ -24,12 +24,12 @@ public class CreateMeshFromWorldData : MonoBehaviour {
         tileMesh.name = "Fake Terrain";
 
         float[,] heightmapData = GetHeightDataFromTexture(heightmapTexture);
-        vertexData = new Vector3[(heightmapTexture.width + 1) * (heightmapTexture.height + 1)];
-        Vector2[] uvData = new Vector2[vertexData.Length];
 
         Vector2 tileDimensionsInMetresPerPixel = tileDimensionsInMetres;
         tileDimensionsInMetresPerPixel.x /= heightmapTexture.width;
         tileDimensionsInMetresPerPixel.y /= heightmapTexture.height;
+
+        Vector2 tileCentreOffset = tileDimensionsInMetres / 2;
 
         Vector3[] vertices = new Vector3[(heightmapTexture.width + 1) * (heightmapTexture.height + 1)];
         for (int i = 0, y = 0; y <= heightmapTexture.height; y++)
@@ -37,6 +37,8 @@ public class CreateMeshFromWorldData : MonoBehaviour {
             for (int x = 0; x <= heightmapTexture.width; x++, i++)
             {
                 vertices[i] = new Vector3(x * tileDimensionsInMetresPerPixel.x, heightmapData[x, y] * maximumHeight, y * tileDimensionsInMetresPerPixel.y);
+                vertices[i].x -= tileCentreOffset.x;
+                vertices[i].z -= tileCentreOffset.y;
             }
         }
         tileMesh.vertices = vertices;
