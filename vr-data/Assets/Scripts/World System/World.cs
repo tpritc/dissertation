@@ -6,17 +6,19 @@ public class World : MonoBehaviour {
     public Texture2D worldHeightmap;
     public Texture2D worldDiffuse;
     public Vector3 worldDimensions;
+    public float startScale = 0.001f;
 
     private Texture2D rotatedWorldDiffuse;
 
     private Tile[] tiles;
     private static int tileSize = 128;
     private Vector3 tileDimensions;
+    private bool dataIsSetUp = false;
 
 	void Start () {
         
         tiles = new Tile[(worldHeightmap.width / tileSize) * (worldHeightmap.height * tileSize)];
-        tileDimensions = new Vector3(worldDimensions.x / (worldHeightmap.width / tileSize), worldDimensions.y, worldDimensions.z / (worldHeightmap.height / tileSize));
+        tileDimensions = new Vector3(worldDimensions.x / (worldHeightmap.width / tileSize), worldDimensions.y, worldDimensions.z / (worldHeightmap.height / tileSize)) * startScale;
 
         Vector3 tileAsProportionOfWorld = new Vector3(0.25f, 1.0f, 0.25f);
         //new Vector2(1 / (worldHeightmap.width / tileSize), 1 / (worldHeightmap.height / tileSize));
@@ -49,12 +51,18 @@ public class World : MonoBehaviour {
 
                 // Place it nicely in the world
                 tileGameObject.transform.parent = transform;
-                Vector3 tileOffset = new Vector3(x * tileDimensions.x, 0.0f, y * tileDimensions.z); // multiply z by -1f to make it work idk
+                Vector3 tileOffset = new Vector3((x * tileDimensions.x) - (worldDimensions.x * startScale * 0.5f), 0.0f, (y * tileDimensions.z) - (worldDimensions.z * startScale * 0.5f));
                 tileGameObject.transform.position = tileOffset;
-                //tileGameObject.transform.localScale -= new Vector3(tileGameObject.transform.localScale.x * 2, 0.0f, 0.0f);
-                //tileGameObject.transform.Rotate(Vector3.up, 90);
-                Debug.Log(tileGameObject.GetComponent<MeshFilter>().mesh.uv[673]);
             }
         }
 	}
+
+    void Update()
+    {
+        if (!dataIsSetUp)
+        {
+            gameObject.GetComponent<DataManager>().SetUpData();
+            dataIsSetUp = true;
+        }
+    }
 }

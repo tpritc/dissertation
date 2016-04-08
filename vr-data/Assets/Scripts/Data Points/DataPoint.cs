@@ -11,7 +11,7 @@ public class DataPoint : MonoBehaviour {
     private bool dataPanelIsSetUp = false;
 	
 	void Update () {
-        if (!dataPanelIsSetUp) { SetUpPanel(); }
+        //if (!dataPanelIsSetUp) { SetUpPanel(); }
 	}
 
     void SetUpPanel()
