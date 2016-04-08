@@ -8,8 +8,8 @@ public class Tile : MonoBehaviour {
     private Texture2D heightmapTexture;
     private Texture2D diffuseTexture;
 
-    public Vector2 uvTopLeft;
-    public Vector2 uvBottomRight;
+    public Vector2 uvBottomLeft;
+    public Vector2 uvTopRight;
 
     private Mesh mesh;
 
@@ -22,35 +22,40 @@ public class Tile : MonoBehaviour {
         Vector3[] vertices = new Vector3[(heightmapTexture.width + 1) * (heightmapTexture.height + 1)];
         Vector2[] uv = new Vector2[vertices.Length];
 
-        float uvWidth = uvTopLeft.x - uvBottomRight.x;
-        float uvHeight = uvTopLeft.y - uvBottomRight.y;
+        float uvWidth = uvBottomLeft.x - uvTopRight.x;
+        float uvHeight = uvBottomLeft.y - uvTopRight.y;
 
         for (int i = 0, z = 0; z <= heightmapTexture.height; z++)
         {
             for (int x = 0; x <= heightmapTexture.width; x++, i++)
             {
-                vertices[i] = new Vector3(x * (tileDimensions.x / heightmapTexture.width), heightmapData[x, z] * tileDimensions.y, z * (tileDimensions.z / heightmapTexture.height));
-                vertices[i].x -= tileDimensions.x / 2;
-                vertices[i].z -= tileDimensions.y / 2;
-                uv[i] = new Vector2((float)x / (float)heightmapTexture.width, (float)z / (float)heightmapTexture.height);
-                uv[i].x = (uv[i].x * uvWidth) + uvTopLeft.x;
-                uv[i].y = (uv[i].y * uvHeight) + uvTopLeft.y;
+                vertices[i] = new Vector3(x * (tileDimensions.x / heightmapTexture.width), heightmapData[z, x] * tileDimensions.y, z * (tileDimensions.z / heightmapTexture.height));
+                //vertices[i].x -= tileDimensions.x / 2;
+                //vertices[i].z -= tileDimensions.y / 2;
+                uv[i] = new Vector2((float)(x) / (float)(heightmapTexture.width), (float)(z) / (float)(heightmapTexture.height));
+                uv[i].x = (uv[i].x * 0.25f) + uvBottomLeft.x;
+                uv[i].y = (uv[i].y * 0.25f) + uvBottomLeft.y;
             }
         }
         mesh.vertices = vertices;
         mesh.uv = uv;
-        Debug.Log(uv[3]);
-        Debug.Log(uv[1000]);
 
         int[] triangles = new int[heightmapTexture.width * heightmapTexture.height * 6];
         for (int ti = 0, vi = 0, y = 0; y < heightmapTexture.height; y++, vi++)
         {
             for (int x = 0; x < heightmapTexture.width; x++, ti += 6, vi++)
             {
-                triangles[ti] = vi;
+                /*triangles[ti] = vi;
                 triangles[ti + 3] = triangles[ti + 2] = vi + 1;
                 triangles[ti + 4] = triangles[ti + 1] = vi + heightmapTexture.width + 1;
-                triangles[ti + 5] = vi + heightmapTexture.width + 2;
+                triangles[ti + 5] = vi + heightmapTexture.width + 2;*/
+                triangles[ti] = vi + heightmapTexture.width + 1;
+                triangles[ti + 2] = vi;
+                triangles[ti + 1] = vi + 1;
+                triangles[ti + 3] = vi + heightmapTexture.width + 1;
+                triangles[ti + 5] = vi + 1;
+                triangles[ti + 4] = vi + heightmapTexture.width + 2;
+
             }
         }
         mesh.triangles = triangles;

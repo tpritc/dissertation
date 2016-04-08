@@ -19,7 +19,7 @@ public class DisplayData : MonoBehaviour {
 
     void UpdateUI(DataPoint newDataPoint)
     {
-        if (dataPoint != null)
+        /*if (dataPoint != null)
         {
             dataPoint.SetColor(Color.red);
         }
@@ -40,7 +40,7 @@ public class DisplayData : MonoBehaviour {
             dataPointText.GetComponent<TextDataManager>().SetTitle(data[i].Key);
             dataPointText.GetComponent<TextDataManager>().SetData(data[i].Value.ToString());
             dataPointText.name = "Data Text (" + data[i].Key + ")";
-        }
+        }*/
     }
 
     public void SetDataPoint(DataPoint newDataPoint)

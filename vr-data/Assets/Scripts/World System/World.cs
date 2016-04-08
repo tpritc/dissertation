@@ -7,6 +7,8 @@ public class World : MonoBehaviour {
     public Texture2D worldDiffuse;
     public Vector3 worldDimensions;
 
+    private Texture2D rotatedWorldDiffuse;
+
     private Tile[] tiles;
     private static int tileSize = 128;
     private Vector3 tileDimensions;
@@ -16,34 +18,42 @@ public class World : MonoBehaviour {
         tiles = new Tile[(worldHeightmap.width / tileSize) * (worldHeightmap.height * tileSize)];
         tileDimensions = new Vector3(worldDimensions.x / (worldHeightmap.width / tileSize), worldDimensions.y, worldDimensions.z / (worldHeightmap.height / tileSize));
 
-        float diffuseAsProportionOfHeightmap = worldDiffuse.width / worldHeightmap.width;
+        Vector3 tileAsProportionOfWorld = new Vector3(0.25f, 1.0f, 0.25f);
+        //new Vector2(1 / (worldHeightmap.width / tileSize), 1 / (worldHeightmap.height / tileSize));
 
-        Debug.Log("Heightmap: " + worldHeightmap.width + " by " + worldHeightmap.height);
+        Debug.Log("Tile as a Proportion of the World: " + tileAsProportionOfWorld);
 
-        for (int x = 0, i = 0; x < worldHeightmap.width / tileSize; x++)
+        for (int y = 0, i = 0; y < worldHeightmap.width / tileSize; y++)
         {
-            for (int y = 0; y < worldHeightmap.height / tileSize; y++, i++)
+            for (int x = 0; x < worldHeightmap.height / tileSize; x++, i++)
             {
+                // Create GameObject and Tile
+                GameObject tileGameObject = new GameObject("Tile (" + x + ", " + y + ")");
+                tiles[i] = tileGameObject.AddComponent<Tile>();
+
+                // Create Heightmap for Tile
                 Texture2D tileHeightmap = new Texture2D(tileSize, tileSize);
                 tileHeightmap.SetPixels(worldHeightmap.GetPixels(x * tileSize, y * tileSize, tileSize, tileSize));
 
-                float proportions = (float)tileSize / (float)worldHeightmap.width;
-                Vector2 tileUVTopLeft = new Vector2(x * proportions, y * proportions);
-                Vector2 tileUVBottomRight = new Vector2((x + 1) * proportions, (y + 1) * proportions);
+                // Create UV Map for Tile
+                Vector2 tileUVBottomLeft = new Vector2(x * tileAsProportionOfWorld.x, y * tileAsProportionOfWorld.z);
+                Vector2 tileUVTopRight = new Vector2((x + 1) * tileAsProportionOfWorld.x, (y + 1) * tileAsProportionOfWorld.z);
+                tiles[i].uvBottomLeft = tileUVBottomLeft;
+                tiles[i].uvTopRight = tileUVTopRight;
 
-                Vector3 tileOffset = new Vector3(x * tileDimensions.x, 0.0f, y * tileDimensions.z);
 
-                GameObject tileGameObject = new GameObject("Tile (" + x + ", " + y + ")");
-
-                tiles[i] = tileGameObject.AddComponent<Tile>();
+                // Set Heightmap, Diffuse, and the Dimensions of the Tile
                 tiles[i].Heightmap = tileHeightmap;
                 tiles[i].Diffuse = worldDiffuse;
                 tiles[i].Dimensions = tileDimensions;
-                tiles[i].uvTopLeft = tileUVTopLeft;
-                tiles[i].uvBottomRight = tileUVBottomRight;
 
+                // Place it nicely in the world
                 tileGameObject.transform.parent = transform;
+                Vector3 tileOffset = new Vector3(x * tileDimensions.x, 0.0f, y * tileDimensions.z); // multiply z by -1f to make it work idk
                 tileGameObject.transform.position = tileOffset;
+                //tileGameObject.transform.localScale -= new Vector3(tileGameObject.transform.localScale.x * 2, 0.0f, 0.0f);
+                //tileGameObject.transform.Rotate(Vector3.up, 90);
+                Debug.Log(tileGameObject.GetComponent<MeshFilter>().mesh.uv[673]);
             }
         }
 	}
