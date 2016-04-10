@@ -28,4 +28,12 @@ public class DataPoint : MonoBehaviour {
         dataPanel = null;
         dataPanelIsSetUp = false;
     }
+
+    public void TogglePanel() {
+        if (dataPanelIsSetUp) {
+            TearDownPanel();
+        } else {
+            SetUpPanel();
+        }
+    }
 }

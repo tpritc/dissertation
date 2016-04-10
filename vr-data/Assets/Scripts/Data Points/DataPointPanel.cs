@@ -74,11 +74,13 @@ public class DataPointPanel : MonoBehaviour {
     void UpdatePositionForDataPoint()
     {
         Vector3 dpPosition = dataPoint.transform.position;
-        Vector3 dpScale = dataPoint.transform.lossyScale;
+        Vector3 headPosition = GameObject.Find("Camera (head)").transform.position;
 
-        float metersAbovePoint = 100f;
+        float metersAbovePoint = 1.2f;
 
-        transform.position = new Vector3(dpPosition.x, dpPosition.y * dpScale.y * metersAbovePoint, dpPosition.z);
+        transform.position = new Vector3(dpPosition.x, metersAbovePoint, dpPosition.z);
+        transform.LookAt(new Vector3(headPosition.x, metersAbovePoint, headPosition.z));
+        transform.Rotate(transform.up, 90f);
     }
 
     void UpdateLineToDataPoint()
