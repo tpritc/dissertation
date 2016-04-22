@@ -16,10 +16,19 @@ public class DataPointPanel : MonoBehaviour {
 
     public DataPointBase pointBase;
 
-    void Update()
-    {
-        UpdatePositionForDataPoint();
-        UpdateLineToDataPoint();
+    private VRModeManager vrMM;
+
+    void Start() {
+        vrMM = GameObject.FindObjectOfType<VRModeManager>();
+    }
+
+    void Update() {
+        if (vrMM.virtualRealityMode) {
+            UpdatePositionForDataPoint(true);
+            UpdateLineToDataPoint();
+        } else {
+            UpdatePositionForDataPoint(false);
+        }
     }
 
     public void SetUpPanelWithNewDataPoint(DataPoint dp)
@@ -71,16 +80,24 @@ public class DataPointPanel : MonoBehaviour {
         pointBase.dataPointToTrack = dataPoint;
     }
 
-    void UpdatePositionForDataPoint()
+    void UpdatePositionForDataPoint(bool vr)
     {
         Vector3 dpPosition = dataPoint.transform.position;
         Vector3 headPosition = GameObject.Find("Camera (head)").transform.position;
 
         float metersAbovePoint = 1.2f;
-
+        if (!vr) {
+            metersAbovePoint = 0.4f;
+        }
         transform.position = new Vector3(dpPosition.x, metersAbovePoint, dpPosition.z);
-        transform.LookAt(new Vector3(headPosition.x, metersAbovePoint, headPosition.z));
-        transform.Rotate(transform.up, 90f);
+
+        if (vr) {
+            transform.LookAt(new Vector3(headPosition.x, metersAbovePoint, headPosition.z));
+            transform.Rotate(transform.up, 90f);
+        } else {
+            transform.rotation = Quaternion.identity;
+            transform.Rotate(new Vector3(0f, 270f, 270f));
+        }
     }
 
     void UpdateLineToDataPoint()

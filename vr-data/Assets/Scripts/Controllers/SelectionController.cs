@@ -4,7 +4,7 @@ using System.Collections;
 public class SelectionController : MonoBehaviour {
 
     public float standardDistance = 0.05f;  // 5 cm
-    public float extendedDistance = 1.05f;  // Extension of one metre
+    public float extendedDistance = 0.8f;  // Extension
 
     public GameObject vrController;
     public bool leftController;
@@ -28,10 +28,11 @@ public class SelectionController : MonoBehaviour {
         ring = ringGO.GetComponent<ControllerRing>();
         ring.SetUpPositions(standardDistance * ringGO.transform.forward, extendedDistance * ringGO.transform.forward);
 
+        SteamVR_ControllerManager SVRCM = GameObject.FindObjectOfType<SteamVR_ControllerManager>();
         if (leftController) {
-            controllerDeviceIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost);
+            controllerDeviceIndex = (int)SVRCM.leftIndex;
         } else if (rightController) {
-            controllerDeviceIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost);
+            controllerDeviceIndex = (int)SVRCM.rightIndex;
         } else {
             Debug.LogError("No controller checked. Things gon' fuck up.");
         }
