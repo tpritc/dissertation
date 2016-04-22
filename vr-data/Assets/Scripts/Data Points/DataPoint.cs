@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class DataPoint : MonoBehaviour {
 
@@ -10,8 +11,20 @@ public class DataPoint : MonoBehaviour {
     private DataPointPanel dataPanel;
     private bool dataPanelIsSetUp = false;
 	
-	void Update () {
-        //if (!dataPanelIsSetUp) { SetUpPanel(); }
+	void Start () {
+        switch (data["Severity"].ToString()) {
+            case "Slight":
+                gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
+                break;
+            case "Serious":
+                gameObject.GetComponent<MeshRenderer>().material.color = Color.yellow;
+                break;
+            case "Fatal":
+                gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
+                break;
+            default:
+                break;
+        }
 	}
 
     void SetUpPanel()

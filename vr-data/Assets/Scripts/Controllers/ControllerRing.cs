@@ -8,7 +8,7 @@ public class ControllerRing : MonoBehaviour {
     private float distanceToClosestSelectableDataPoint = 9999f;
 
     private float movementTimer = 0f;
-    private float movementTime = 0.2f;
+    private float movementTime = 0.1f;
     private bool extended = false;
     private bool contracted = true;
     private bool extending = false;
@@ -22,6 +22,10 @@ public class ControllerRing : MonoBehaviour {
 
     public DataPoint DataPointToSelect {
         get { return closestSelectableDataPoint; }
+    }
+
+    void Start() {
+        transform.localPosition = contractedPosition;
     }
     
     void OnTriggerStay(Collider other) {
