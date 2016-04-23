@@ -23,7 +23,7 @@ public class DataPointPanel : MonoBehaviour {
     }
 
     void Update() {
-        if (vrMM.virtualRealityMode) {
+        if (vrMM.VirtualRealityMode) {
             UpdatePositionForDataPoint(true);
             UpdateLineToDataPoint();
         } else {
