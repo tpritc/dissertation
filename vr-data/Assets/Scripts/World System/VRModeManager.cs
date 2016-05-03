@@ -44,9 +44,21 @@ public class VRModeManager : MonoBehaviour {
         if (GUI.Button(new Rect(new Vector2(20f, 70f), new Vector2(100f, 40f)), "Screen Mode")) {
             SetVRMode(false);
         }
-        string label = "Thomas Pritchard\nPlymouth University\n\n" + GetBuildTime().ToString("R") + "\n";
+        if (vrMode) {
+            TrackControllersForTesting trackingGO = FindObjectOfType<TrackControllersForTesting>();
+            if (trackingGO.tracking) {
+                if (GUI.Button(new Rect(new Vector2(20f, Screen.height - 40f - 20f), new Vector2(100f, 40f)), "Stop Tracking")) {
+                    trackingGO.EndTracking();
+                }
+            } else {
+                if (GUI.Button(new Rect(new Vector2(20f, Screen.height - 40f - 20f), new Vector2(100f, 40f)), "Start Tracking")) {
+                    trackingGO.StartTracking();
+                }
+            }
+        }
+        string label = "Thomas Pritchard\nPlymouth University\n\nData from Department of Transport\n\n" + GetBuildTime().ToString("R") + "\n";
         if (isSteamBuild) { label += "Steam Build"; } else { label += "Non-Steam Build"; }
-        GUI.Label(new Rect(130f, 20f, 400f, 90f), label);
+        GUI.Label(new Rect(130f, 20f, 400f, 200f), label);
     }
 
     private DateTime GetBuildTime() {
