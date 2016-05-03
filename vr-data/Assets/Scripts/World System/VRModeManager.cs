@@ -25,6 +25,7 @@ public class VRModeManager : MonoBehaviour {
         if (vrModeEnable && !vrMode) {
             Destroy(currentCameraSystem);
             currentCameraSystem = Instantiate(VR);
+            FindObjectOfType<ControllerNaturalManipulation>().objectToManipulate = GameObject.Find("World");
         } else if (!vrModeEnable && vrMode) {
             Destroy(currentCameraSystem);
             currentCameraSystem = Instantiate(nonVR);
