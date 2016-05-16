@@ -12,6 +12,7 @@ public class DataPoint : MonoBehaviour {
     private bool dataPanelIsSetUp = false;
 	
 	void Start () {
+
         switch (data["Severity"].ToString()) {
             case "Slight":
                 gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
